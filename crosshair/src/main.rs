@@ -73,7 +73,7 @@ impl Application {
       
 
       
-      controller.toggle_screen_capture_visibility(true);
+      controller.toggle_screen_capture_visibility(false);
         Ok(())
     }
 
