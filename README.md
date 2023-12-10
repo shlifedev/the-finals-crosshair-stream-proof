@@ -16,6 +16,7 @@
 
 
 ## None-Proofed  
-![image](https://github.com/shlifedev/stream-proof-crosshair/assets/49047211/5f072670-232b-4c8e-9a18-cb6fd97aa571)
+![image](https://github.com/shlifedev/the-finals-stream-proof-crosshair/assets/49047211/1c0a9e03-7a27-499f-a29d-64eedaa7a183)
+
 
 Tested on EAC AntiCheat.
