@@ -67,8 +67,34 @@ use native_dialog::{FileDialog, MessageDialog, MessageType};
 pub struct Application {
 
 }
+fn drawCross(ui: &imgui::Ui, distance : f32, thickness : f32) {
+
+ 
+    let mut x = ui.io().display_size[0].div(2.0);
+    let mut y =ui.io().display_size[1].div(2.0);
+    let mut length = 6.0; 
+     
+    let chColor = [0.0, 255.0, 0.0];
+    ui.get_window_draw_list().add_line([x-distance, y], [x-distance-length, y], chColor).thickness(thickness).build(); 
+    ui.get_window_draw_list().add_line([x+distance, y], [x+distance+length, y], chColor).thickness(thickness).build();
+    
+    ui.get_window_draw_list().add_line([x ,y-distance], [x, y-distance-length], chColor).thickness(thickness).build();
+    ui.get_window_draw_list().add_line([x, y+distance], [x, y+distance+length], chColor).thickness(thickness).build(); 
+} 
+
+
+fn drawDot(ui: &imgui::Ui, size : f32) { 
+    let mut x = ui.io().display_size[0].div(2.0);
+    let mut y =ui.io().display_size[1].div(2.0);
+    ui.get_window_draw_list().add_circle([x,y], 3.0, [0.0,0.0, 0.0]).build();
+    ui.get_window_draw_list().add_circle([x,y], 2.0, [0.0,255.0, 0.0]).build();
+} 
+    
+ 
 
 impl Application {
+
+     
     pub fn pre_update(&mut self, controller: &mut SystemRuntimeController) -> anyhow::Result<()> {
       
 
@@ -86,9 +112,10 @@ impl Application {
         Ok(())
     }
 
-
+ 
     fn render_overlay(&self, ui: &imgui::Ui) {
 
+        
         let text_buf;
         let text = obfstr!(text_buf = "Overlay");
         
@@ -97,34 +124,23 @@ impl Application {
         let mut y =ui.io().display_size[1].div(2.0);
 
         // 크로스헤어 크기 
-        { 
-            // DOT
-            // let mut size = 3.0;
-            // let mut border = 1.0;
-            // ui.get_window_draw_list().add_rect([x-border,y-border], [x+size+border, y+size+border], [0.0,0.0,0.0]).filled(true).build();
-            // ui.get_window_draw_list().add_rect([x,y], [x+size, y+size], [0.0,255.0,0.0]).filled(true).build();
+        {
+        //    drawDot(&ui, 3.0);
         }
 
         {
 
             if ui.io().mouse_down[1] == true {
-                let mut length = 6.0;
-                let mut thickness = 2.0;
-                let mut distance = 4.0;
-                 
-                let chColor = [0.0, 255.0, 0.0];
-                ui.get_window_draw_list().add_line([x-distance, y], [x-distance-length, y], chColor).thickness(thickness).build(); 
-                ui.get_window_draw_list().add_line([x+distance, y], [x+distance+length, y], chColor).thickness(thickness).build();
-                
-                ui.get_window_draw_list().add_line([x ,y-distance], [x, y-distance-length], chColor).thickness(thickness).build();
-                ui.get_window_draw_list().add_line([x, y+distance], [x, y+distance+length], chColor).thickness(thickness).build();
-                
+                drawCross(&ui, 5.0, 2.0);
             }
-     
+            else{
+                drawCross(&ui, 10.0, 2.0);
+            } 
         }
         ui.text("Crosshair Overlay");
     }
     
+ 
     pub fn render(&self, ui: &imgui::Ui) {
         ui.window("overlay")
         .draw_background(false)
@@ -133,8 +149,8 @@ impl Application {
         .size(ui.io().display_size, Condition::Always)
         .position([0.0, 0.0], Condition::Always)
         .build(|| self.render_overlay(ui));
+  
  
-
     }
 
 
