@@ -3,6 +3,7 @@
  Valthrun Based Crosshair
  
 - Stream Proofed
+- All Resolution Support
 
 # Requirements
 
