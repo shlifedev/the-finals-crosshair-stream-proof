@@ -28,6 +28,7 @@ chrono = "0.4.26"
 rand = "0.8.5"
 libloading = "0.7.4" # Same version as used by ash
 native-dialog = "0.7.0"
+sysinfo = "0.29.11"
 
 [build-dependencies]
 winres = "0.1"

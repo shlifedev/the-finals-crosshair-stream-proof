@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 #![feature(const_fn_floating_point_arithmetic)]
-
+use sysinfo::{System, SystemExt,PidExt,UserExt, ProcessExt};
 use std::{
     cell::{
         RefCell,
@@ -22,7 +22,7 @@ use std::{
     time::{
         Duration,
         Instant,
-    }, thread::{sleep, sleep_ms},
+    }, thread::{sleep, sleep_ms}, ops::Div,
 };
 
 use anyhow::{Context, Ok};
@@ -92,14 +92,15 @@ impl Application {
         let text_buf;
         let text = obfstr!(text_buf = "Overlay");
         
-        let mut x = 398.0;
-        let mut y = 222.0;
+        let mut x = ui.io().display_size[0].div(2.0);
+        let mut y =ui.io().display_size[1].div(2.0);
         let mut size = 3.0;
         let mut border = 1.0;
         ui.get_window_draw_list().add_rect([x-border,y-border], [x+size+border, y+size+border], [0.0,0.0,0.0]).filled(true).build();
+        ui.get_window_draw_list().add_rect([x,y], [x+size, y+size], [0.0,255.0,0.0]).filled(true).build();
 
-         ui.get_window_draw_list().add_rect([x,y], [x+size, y+size], [0.0,255.0,0.0]).filled(true).build();
 
+        ui.text("Crosshair Overlay");
     }
     
     pub fn render(&self, ui: &imgui::Ui) {
@@ -123,28 +124,43 @@ struct SchemaDumpArgs {
 
 
 fn main(){
- 
+  
 
+ 
     let cmd : Option<AppCommand> = Default::default();
     let command = cmd.as_ref().unwrap_or(&AppCommand::Overlay);
     let result = match command {
         AppCommand::DumpSchema(args) => {},
         AppCommand::Overlay => main_overlay().expect("")
     };
+ 
+    
 
-
+ 
 }
 
 fn main_overlay() -> anyhow::Result<()> {
 
 
- 
+   
+let s = System::new_all();
+let mut pid = 0;
+for process in s.processes_by_name("Discovery.exe") {
+    pid = process.pid().as_u32(); 
+}
 
-    let title = String::from("THE FINALS");
+/*
+THE FINALS  
+ahk_class DefensiveBat_cc564fbe
+ahk_exe Discovery.exe
+ahk_pid 25776
+ahk_id 1316060
+ */
+    let title = String::from("Discovery.exe");
     let app_fonts: Rc<RefCell<Option<AppFonts>>> = Default::default();
     let overlay_options = OverlayOptions {
-        title: obfstr!("CS2 Overlay").to_string(),
-        target: OverlayTarget::WindowTitle(title),
+        title: obfstr!("FN Overlay").to_string(),
+        target: OverlayTarget::WindowOfProcess(pid),
         font_init: Some(Box::new({
             let app_fonts = app_fonts.clone();
 
