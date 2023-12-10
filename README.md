@@ -1,6 +1,6 @@
 # stream-proof-crosshair
 
- Valthrun Based Crosshair
+ [Valthrun](https://github.com/Valthrun/Valthrun/tree/master/overlay) Based Crosshair
  
 - Stream Proofed
 - All Resolution Support
