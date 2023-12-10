@@ -9,6 +9,7 @@
 # Requirements
 
  - Vulkan DLL
+ - Windows FullScreen
 
 ## Proofed
 방송 프로그램, 스크린 캡쳐, 기타 등을 우회하는 기능이 켜져 있습니다.
