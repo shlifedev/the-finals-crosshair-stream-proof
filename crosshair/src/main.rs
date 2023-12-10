@@ -24,6 +24,8 @@ use std::{
         Instant,
     }, thread::{sleep, sleep_ms}, ops::Div,
 };
+use obfstr::obfstr; 
+use native_dialog::{FileDialog, MessageDialog, MessageType};
 
 use anyhow::{Context, Ok};
 use clap::{
@@ -59,22 +61,17 @@ enum AppCommand {
 pub struct AppFonts {
     fid: FontId,
 }
-
-use obfstr::obfstr;
-
-use native_dialog::{FileDialog, MessageDialog, MessageType};
-
-pub struct Application {
-
+struct SchemaDumpArgs {
+    pub target_file: PathBuf,
 }
-fn drawCross(ui: &imgui::Ui, distance : f32, thickness : f32) {
-
- 
+pub struct Application {
+}
+fn drawCross(ui: &imgui::Ui, distance : f32, thickness : f32) { 
     let mut x = ui.io().display_size[0].div(2.0);
     let mut y =ui.io().display_size[1].div(2.0);
     let mut length = 6.0; 
      
-    let chColor = [0.0, 255.0, 0.0];
+    let chColor = [0.0, 255.0, 0.0, 0.9];
     ui.get_window_draw_list().add_line([x-distance, y], [x-distance-length, y], chColor).thickness(thickness).build(); 
     ui.get_window_draw_list().add_line([x+distance, y], [x+distance+length, y], chColor).thickness(thickness).build();
     
@@ -93,51 +90,40 @@ fn drawDot(ui: &imgui::Ui, size : f32) {
  
 
 impl Application {
-
-     
     pub fn pre_update(&mut self, controller: &mut SystemRuntimeController) -> anyhow::Result<()> {
-      
-
-      
-      controller.toggle_screen_capture_visibility(false);
+        controller.toggle_screen_capture_visibility(false);
         Ok(())
     }
-
     pub fn update(&mut self, ui: &imgui::Ui) -> anyhow::Result<()> {
-        {
-
-        } 
-
-
         Ok(())
     }
-
- 
     fn render_overlay(&self, ui: &imgui::Ui) {
-
-        
-        let text_buf;
-        let text = obfstr!(text_buf = "Overlay");
-        
-        // 윈도우 포지션
-        let mut x = ui.io().display_size[0].div(2.0);
-        let mut y =ui.io().display_size[1].div(2.0);
-
-        // 크로스헤어 크기 
+        /* Dot */
         {
         //    drawDot(&ui, 3.0);
         }
-
+        /* CrossHair */
         {
 
             if ui.io().mouse_down[1] == true {
                 drawCross(&ui, 5.0, 2.0);
             }
+            else if (ui.io().key_shift == true){ 
+                if(ui.io().key_ctrl){
+                    drawCross(&ui, 5.0, 2.0);
+                }
+                else{
+                    drawCross(&ui, 12.0, 3.0);
+                }
+            }
+            else if (ui.io().key_ctrl == true){
+                drawCross(&ui, 5.0, 2.0);
+            } 
             else{
                 drawCross(&ui, 10.0, 3.0);
             } 
         }
-        ui.text("Crosshair Overlay");
+        ui.text("The Finals Crosshair Overlay 1.0");
     }
     
  
@@ -148,54 +134,32 @@ impl Application {
         .no_inputs()
         .size(ui.io().display_size, Condition::Always)
         .position([0.0, 0.0], Condition::Always)
-        .build(|| self.render_overlay(ui));
-  
- 
+        .build(|| self.render_overlay(ui)); 
     }
 
 
 }
-
-struct SchemaDumpArgs {
-    pub target_file: PathBuf,
-}
-
-
-fn main(){
-  
-
  
+ 
+fn main(){ 
     let cmd : Option<AppCommand> = Default::default();
     let command = cmd.as_ref().unwrap_or(&AppCommand::Overlay);
     let result = match command {
         AppCommand::DumpSchema(args) => {},
         AppCommand::Overlay => main_overlay().expect("")
-    };
- 
-    
-
- 
+    }; 
 }
 
-fn main_overlay() -> anyhow::Result<()> {
-
-
-   
-let s = System::new_all();
-let mut pid = 0;
-for process in s.processes_by_name("Discovery.exe") {
-    pid = process.pid().as_u32(); 
-}
-
-/*
-THE FINALS  
-ahk_class DefensiveBat_cc564fbe
-ahk_exe Discovery.exe
-ahk_pid 25776
-ahk_id 1316060
- */
+fn main_overlay() -> anyhow::Result<()> { 
+    let s = System::new_all();
     let title = String::from("Discovery.exe");
-    let app_fonts: Rc<RefCell<Option<AppFonts>>> = Default::default();
+    let app_fonts: Rc<RefCell<Option<AppFonts>>> = Default::default(); 
+    let mut pid = 0;
+
+    for process in s.processes_by_name(&title) {
+        pid = process.pid().as_u32(); 
+}
+   
     let overlay_options = OverlayOptions {
         title: obfstr!("FN Overlay").to_string(),
         target: OverlayTarget::WindowOfProcess(pid),
