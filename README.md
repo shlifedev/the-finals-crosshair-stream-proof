@@ -5,6 +5,8 @@
 - Stream Proofed
 - All Resolution Support
 
+[Download](https://github.com/shlifedev/the-finals-stream-proof-crosshair/releases)
+
 # Requirements
 
  - Vulkan DLL
