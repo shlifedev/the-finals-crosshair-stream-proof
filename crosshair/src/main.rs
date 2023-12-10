@@ -57,7 +57,7 @@ enum AppCommand {
 
 
 pub struct AppFonts {
-    valthrun: FontId,
+    fid: FontId,
 }
 
 use obfstr::obfstr;
@@ -73,7 +73,7 @@ impl Application {
       
 
       
-      controller.toggle_screen_capture_visibility(false);
+      controller.toggle_screen_capture_visibility(true);
         Ok(())
     }
 
@@ -90,7 +90,7 @@ impl Application {
     fn render_overlay(&self, ui: &imgui::Ui) {
 
         let text_buf;
-        let text = obfstr!(text_buf = "Valthrun Overlay");
+        let text = obfstr!(text_buf = "Overlay");
         
         let mut x = 398.0;
         let mut y = 222.0;
@@ -152,8 +152,8 @@ fn main_overlay() -> anyhow::Result<()> {
                 let mut app_fonts = app_fonts.borrow_mut();
 
                 let font_size = 18.0;
-                let valthrun_font = imgui.fonts().add_font(&[FontSource::TtfData {
-                    data: include_bytes!("../resources/Valthrun-Regular.ttf"),
+                let font = imgui.fonts().add_font(&[FontSource::TtfData {
+                    data: include_bytes!("../resources/Font.ttf"),
                     size_pixels: font_size,
                     config: Some(FontConfig {
                         rasterizer_multiply: 1.5,
@@ -164,7 +164,7 @@ fn main_overlay() -> anyhow::Result<()> {
                 }]);
 
                 *app_fonts = Some(AppFonts {
-                    valthrun: valthrun_font,
+                    fid: font,
                 });
             }
         })),
