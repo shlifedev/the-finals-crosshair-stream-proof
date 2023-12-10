@@ -92,14 +92,36 @@ impl Application {
         let text_buf;
         let text = obfstr!(text_buf = "Overlay");
         
+        // 윈도우 포지션
         let mut x = ui.io().display_size[0].div(2.0);
         let mut y =ui.io().display_size[1].div(2.0);
-        let mut size = 3.0;
-        let mut border = 1.0;
-        ui.get_window_draw_list().add_rect([x-border,y-border], [x+size+border, y+size+border], [0.0,0.0,0.0]).filled(true).build();
-        ui.get_window_draw_list().add_rect([x,y], [x+size, y+size], [0.0,255.0,0.0]).filled(true).build();
 
+        // 크로스헤어 크기 
+        { 
+            // DOT
+            // let mut size = 3.0;
+            // let mut border = 1.0;
+            // ui.get_window_draw_list().add_rect([x-border,y-border], [x+size+border, y+size+border], [0.0,0.0,0.0]).filled(true).build();
+            // ui.get_window_draw_list().add_rect([x,y], [x+size, y+size], [0.0,255.0,0.0]).filled(true).build();
+        }
 
+        {
+
+            if ui.io().mouse_down[1] == true {
+                let mut length = 6.0;
+                let mut thickness = 2.0;
+                let mut distance = 4.0;
+                 
+                let chColor = [0.0, 255.0, 0.0];
+                ui.get_window_draw_list().add_line([x-distance, y], [x-distance-length, y], chColor).thickness(thickness).build(); 
+                ui.get_window_draw_list().add_line([x+distance, y], [x+distance+length, y], chColor).thickness(thickness).build();
+                
+                ui.get_window_draw_list().add_line([x ,y-distance], [x, y-distance-length], chColor).thickness(thickness).build();
+                ui.get_window_draw_list().add_line([x, y+distance], [x, y+distance+length], chColor).thickness(thickness).build();
+                
+            }
+     
+        }
         ui.text("Crosshair Overlay");
     }
     
