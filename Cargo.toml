@@ -1,0 +1,29 @@
+[workspace]
+resolver = "2"
+members = [
+    "cs2-schema/declaration",
+    "cs2-schema/cutl",
+    "cs2-schema/generated",
+
+    "kernel/interface",
+    "kernel/shared",
+
+    "radar/client",
+    "radar/client-standalone",
+    "radar/server",
+    "radar/server-standalone",
+    "radar/shared",
+
+    "controller",
+    "cs2",
+    "overlay",
+    "crosshair",
+]
+exclude = ["kernel/driver"]
+
+[profile.dev]
+incremental = true
+
+[profile.release]
+panic = "abort"
+lto = true
