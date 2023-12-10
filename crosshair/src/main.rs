@@ -134,7 +134,7 @@ impl Application {
                 drawCross(&ui, 5.0, 2.0);
             }
             else{
-                drawCross(&ui, 10.0, 2.0);
+                drawCross(&ui, 10.0, 3.0);
             } 
         }
         ui.text("Crosshair Overlay");
