@@ -28,3 +28,5 @@ https://github.com/shlifedev/THE-FINALS-stream-proof-crosshair/assets/49047211/2
 
 
 Tested on EAC AntiCheat.
+
+- 본 링크를 이용한 다운로드 이외의 무단 배포, 공유를 금지합니다.
