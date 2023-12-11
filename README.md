@@ -16,7 +16,7 @@ https://github.com/shlifedev/THE-FINALS-stream-proof-crosshair/assets/49047211/2
 # Requirements
 
  - Vulkan DLL
- - `Windows` FullScreen or `Window Mode` (Full Screen Not Support)
+ - `Windows FullScreen` or `Window Mode` (Full Screen Not Support)
 
 ## Proofed
 (Proofing OBS, Video Recoder, Screen Shoot ...etc)
