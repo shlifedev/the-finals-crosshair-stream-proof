@@ -1,11 +1,16 @@
 # stream-proof-crosshair
 
  [Valthrun](https://github.com/Valthrun/Valthrun/tree/master/overlay) Based Crosshair
+  
  
 - Stream Proofed
 - All Resolution Support
 
 [Download](https://github.com/shlifedev/the-finals-stream-proof-crosshair/releases)
+ 
+
+https://github.com/shlifedev/THE-FINALS-stream-proof-crosshair/assets/49047211/2b59012f-2505-4a6d-8535-4b63eb61c84e
+
 
 # Requirements
 
