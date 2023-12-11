@@ -26,6 +26,9 @@ https://github.com/shlifedev/THE-FINALS-stream-proof-crosshair/assets/49047211/2
 ![image](https://github.com/shlifedev/the-finals-stream-proof-crosshair/assets/49047211/1c0a9e03-7a27-499f-a29d-64eedaa7a183)
 
 
+## Control
+- `Up/Down Arrow` is set y Position
+
 Tested on EAC AntiCheat.
 
 - 본 링크를 이용한 다운로드 이외의 무단 배포, 공유를 금지합니다.
