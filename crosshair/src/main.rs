@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 #![feature(const_fn_floating_point_arithmetic)]
-use sysinfo::{System, SystemExt,PidExt,UserExt, ProcessExt};
+use sysinfo::{System, SystemExt,PidExt,UserExt, ProcessExt}; 
+
 use std::{
     cell::{
         RefCell,
@@ -66,23 +67,38 @@ struct SchemaDumpArgs {
 }
 pub struct Application {
 }
+
+
+static mut ySensivity : f32 = 1.0; 
+
 fn drawCross(ui: &imgui::Ui, distance : f32, thickness : f32) { 
-    let mut x = ui.io().display_size[0].div(2.0);
-    let mut y =ui.io().display_size[1].div(2.0);
+    let mut x = (ui.io().display_size[0].div(2.0));
+    let mut y = (ui.io().display_size[1].div(2.0)) - unsafe { ySensivity };
     let mut length = 6.0; 
      
-    let chColor = [0.0, 255.0, 0.0, 0.9];
-    ui.get_window_draw_list().add_line([x-distance, y], [x-distance-length, y], chColor).thickness(thickness).build(); 
-    ui.get_window_draw_list().add_line([x+distance, y], [x+distance+length, y], chColor).thickness(thickness).build();
+    let crossHairColor = [0.0, 255.0, 0.0, 0.9];
+    let borderColor = [0.0, 0.0, 0.0, 0.9]; 
+    let borderSize = [1.0, 2.0];
     
-    ui.get_window_draw_list().add_line([x ,y-distance], [x, y-distance-length], chColor).thickness(thickness).build();
-    ui.get_window_draw_list().add_line([x, y+distance], [x, y+distance+length], chColor).thickness(thickness).build(); 
+    ui.get_window_draw_list().add_line([x-distance+borderSize[0], y], [x-distance-length-borderSize[0], y], borderColor).thickness(thickness+borderSize[1]).build(); 
+    ui.get_window_draw_list().add_line([x+distance-borderSize[0], y], [x+distance+length+borderSize[0], y], borderColor).thickness(thickness+borderSize[1]).build();
+    ui.get_window_draw_list().add_line([x ,y-distance+borderSize[0]], [x, y-distance-length -borderSize[0]], borderColor).thickness(thickness+borderSize[1]).build();
+    ui.get_window_draw_list().add_line([x, y+distance-borderSize[0]], [x, y+distance+length+borderSize[0]], borderColor).thickness(thickness+borderSize[1]).build(); 
+ 
+    ui.get_window_draw_list().add_line([x-distance, y], [x-distance-length, y], crossHairColor).thickness(thickness).build(); 
+    ui.get_window_draw_list().add_line([x+distance, y], [x+distance+length, y], crossHairColor).thickness(thickness).build();
+    
+    ui.get_window_draw_list().add_line([x ,y-distance], [x, y-distance-length], crossHairColor).thickness(thickness).build();
+    ui.get_window_draw_list().add_line([x, y+distance], [x, y+distance+length], crossHairColor).thickness(thickness).build(); 
+
+
+
 } 
 
 
 fn drawDot(ui: &imgui::Ui, size : f32) { 
-    let mut x = ui.io().display_size[0].div(2.0);
-    let mut y =ui.io().display_size[1].div(2.0);
+    let mut x = (ui.io().display_size[0].div(2.0)) - unsafe { ySensivity };
+    let mut y = (ui.io().display_size[1].div(2.0)) - unsafe { ySensivity };
     ui.get_window_draw_list().add_circle([x,y], 3.0, [0.0,0.0, 0.0]).build();
     ui.get_window_draw_list().add_circle([x,y], 2.0, [0.0,255.0, 0.0]).build();
 } 
@@ -94,10 +110,23 @@ impl Application {
         controller.toggle_screen_capture_visibility(false);
         Ok(())
     }
-    pub fn update(&mut self, ui: &imgui::Ui) -> anyhow::Result<()> {
-        Ok(())
+    pub fn update(&mut self, ui: &imgui::Ui) -> anyhow::Result<()> { 
+        Ok(()) 
     }
+
+   
     fn render_overlay(&self, ui: &imgui::Ui) {
+
+        /* */
+        if ui.is_key_released(imgui::Key::UpArrow) {
+            unsafe { ySensivity += 1.0 };
+        }
+        else if ui.is_key_released(imgui::Key::DownArrow)
+        {
+            unsafe { ySensivity -= 1.0};
+        }
+
+        
         /* Dot */
         {
         //    drawDot(&ui, 3.0);
@@ -122,8 +151,8 @@ impl Application {
             else{
                 drawCross(&ui, 10.0, 3.0);
             } 
-        }
-        ui.text("The Finals Crosshair Overlay 1.0");
+        } 
+        ui.text("v1.0 https://github.com/shlifedev/the-finals-crosshair-stream-proof/");
     }
     
  
@@ -155,10 +184,14 @@ fn main_overlay() -> anyhow::Result<()> {
     let title = String::from("Discovery.exe");
     let app_fonts: Rc<RefCell<Option<AppFonts>>> = Default::default(); 
     let mut pid = 0;
-
+    let mut m = 0;
     for process in s.processes_by_name(&title) {
-        pid = process.pid().as_u32(); 
-}
+        if(process.memory() > m)
+        {
+            m = process.memory();
+            pid = process.pid().as_u32(); 
+        } 
+    }
    
     let overlay_options = OverlayOptions {
         title: obfstr!("FN Overlay").to_string(),
