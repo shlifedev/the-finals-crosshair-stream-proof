@@ -5,7 +5,7 @@
  
 - Stream Proofed
 - All Resolution Support
-- Safety
+- Maybe... Safety :)😒
 
 [Download](https://github.com/shlifedev/the-finals-stream-proof-crosshair/releases)
  
