@@ -23,7 +23,7 @@ use std::{
     time::{
         Duration,
         Instant,
-    }, thread::{sleep, sleep_ms}, ops::Div,
+    }, thread::{sleep, sleep_ms}, ops::{Div, Mul},
 };
 use obfstr::obfstr; 
 use native_dialog::{FileDialog, MessageDialog, MessageType};
@@ -69,10 +69,11 @@ pub struct Application {
 }
 
 
-static mut ySensivity : f32 = 1.0; 
+static mut ySensivity : f32 = 0.0; 
+static mut mode : i32 = 0;
 
 fn drawCross(ui: &imgui::Ui, distance : f32, thickness : f32) { 
-    let mut x = (ui.io().display_size[0].div(2.0));
+    let mut x = -1.0 + (ui.io().display_size[0].div(2.0)) + 1.0;
     let mut y = (ui.io().display_size[1].div(2.0)) - unsafe { ySensivity };
     let mut length = 6.0; 
      
@@ -96,14 +97,13 @@ fn drawCross(ui: &imgui::Ui, distance : f32, thickness : f32) {
 } 
 
 
-fn drawDot(ui: &imgui::Ui, size : f32) { 
+fn drawDot(ui: &imgui::Ui, size : f32) {  
     let mut x = (ui.io().display_size[0].div(2.0)) - unsafe { ySensivity };
-    let mut y = (ui.io().display_size[1].div(2.0)) - unsafe { ySensivity };
-    ui.get_window_draw_list().add_circle([x,y], 3.0, [0.0,0.0, 0.0]).build();
-    ui.get_window_draw_list().add_circle([x,y], 2.0, [0.0,255.0, 0.0]).build();
+    let mut y = (ui.io().display_size[1].div(2.0)) - unsafe { ySensivity }; 
+    ui.get_window_draw_list().add_rect([x-size.mul(2.0), y+size.mul(2.0)], [x+size.mul(2.0), y-size.mul(2.0)], [0.0,0.0, 0.0]).filled(true).build();
+    ui.get_window_draw_list().add_rect([x-size, y-size], [x+size, y+size], [0.0,255.0, 0.0]).filled(true).build();
 } 
-    
- 
+     
 
 impl Application {
     pub fn pre_update(&mut self, controller: &mut SystemRuntimeController) -> anyhow::Result<()> {
@@ -117,6 +117,7 @@ impl Application {
    
     fn render_overlay(&self, ui: &imgui::Ui) {
 
+         
         /* */
         if ui.is_key_released(imgui::Key::UpArrow) {
             unsafe { ySensivity += 1.0 };
@@ -126,33 +127,54 @@ impl Application {
             unsafe { ySensivity -= 1.0};
         }
 
-        
-        /* Dot */
-        {
-        //    drawDot(&ui, 3.0);
+
+        if ui.is_key_released(imgui::Key::RightArrow) {
+            unsafe { mode +=1;
+            if(mode > 1){
+                mode = 0
+            }
+         };
         }
-        /* CrossHair */
+        else if ui.is_key_released(imgui::Key::LeftArrow)
+        {
+            unsafe { mode -=1;
+                if(mode < 0){
+                    mode = 1
+                }
+             };
+        }
+
+
+        
+  
+        if(unsafe { mode } == 1)
+        {  
+            if ui.io().mouse_down[1] == true {
+                drawDot(&ui, 2.0)
+            }
+        } 
+        else if(unsafe { mode } == 0)
         {
 
             if ui.io().mouse_down[1] == true {
-                drawCross(&ui, 5.0, 2.0);
+                drawCross(&ui, 4.0, 2.0);
             }
             else if (ui.io().key_shift == true){ 
                 if(ui.io().key_ctrl){
-                    drawCross(&ui, 5.0, 2.0);
+                    drawCross(&ui, 4.0, 2.0);
                 }
                 else{
                     drawCross(&ui, 12.0, 3.0);
                 }
             }
             else if (ui.io().key_ctrl == true){
-                drawCross(&ui, 5.0, 2.0);
+                drawCross(&ui, 4.0, 2.0);
             } 
             else{
                 drawCross(&ui, 10.0, 3.0);
             } 
         } 
-        ui.text("v1.0 https://github.com/shlifedev/the-finals-crosshair-stream-proof/");
+        ui.text("v1.1 https://github.com/shlifedev/the-finals-crosshair-stream-proof/");
     }
     
  
