@@ -73,7 +73,7 @@ static mut ySensivity : f32 = 0.0;
 static mut mode : i32 = 0;
 
 fn drawCross(ui: &imgui::Ui, distance : f32, thickness : f32) { 
-    let mut x = -1.0 + (ui.io().display_size[0].div(2.0));
+    let mut x = -1.0 + (ui.io().display_size[0].div(2.0)) + 1.0;
     let mut y = (ui.io().display_size[1].div(2.0)) - unsafe { ySensivity };
     let mut length = 6.0; 
      
@@ -103,8 +103,7 @@ fn drawDot(ui: &imgui::Ui, size : f32) {
     ui.get_window_draw_list().add_rect([x-size.mul(2.0), y+size.mul(2.0)], [x+size.mul(2.0), y-size.mul(2.0)], [0.0,0.0, 0.0]).filled(true).build();
     ui.get_window_draw_list().add_rect([x-size, y-size], [x+size, y+size], [0.0,255.0, 0.0]).filled(true).build();
 } 
-    
- 
+     
 
 impl Application {
     pub fn pre_update(&mut self, controller: &mut SystemRuntimeController) -> anyhow::Result<()> {
@@ -118,6 +117,7 @@ impl Application {
    
     fn render_overlay(&self, ui: &imgui::Ui) {
 
+         
         /* */
         if ui.is_key_released(imgui::Key::UpArrow) {
             unsafe { ySensivity += 1.0 };
@@ -148,9 +148,9 @@ impl Application {
         
   
         if(unsafe { mode } == 1)
-        {
+        {  
             if ui.io().mouse_down[1] == true {
-                drawDot(&ui, 1.0)
+                drawDot(&ui, 2.0)
             }
         } 
         else if(unsafe { mode } == 0)
